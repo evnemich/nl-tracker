@@ -1,0 +1,7 @@
+*.config.json
+nohup.out
+state.json
+*chromedriver
+*geckodriver
+*.log
+artifacts/*
