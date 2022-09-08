@@ -21,8 +21,8 @@ from selenium.common.exceptions import NoSuchElementException
 def read_config():
     path = 'config.json'
     # to simplify development
-    if os.path.exists('ind.config.json'):
-        path = 'ind.config.json'
+    if os.path.exists('ind_hag.config.json'):
+        path = 'ind_hag.config.json'
     with open(path, 'r') as f:
         return json.loads(f.read())
 
@@ -163,7 +163,8 @@ def check_available_slots(driver):
     city_picker_select = Select(city_picker)
     city_picker_select.select_by_visible_text(CITY)
 
-    for x in range(1): # number of relatives
+    # number of relatives
+    for x in range(int(CONFIG.get('relatives', 1))):
         city_submit_btn = driver.find_element(By.CLASS_NAME, 'number-up')
         city_submit_btn.click()
 
@@ -174,7 +175,7 @@ def check_available_slots(driver):
     calendar_screenshots = []
     available_dates = collections.OrderedDict()
 
-    for x in range(4):
+    for x in range(int(CONFIG.get('months', 3))):
         calendar_table = driver.find_element(By.CLASS_NAME, 'date-picker')
 
         month, days = parse_available_dates(calendar_table)
@@ -240,9 +241,10 @@ def check_once():
         prev_available_dates = state.get('available_dates', {})
 
         if prev_available_dates != result.available_dates:
-            logger.info('notifying about state change')
+            logger.info('notifying about state change: %s', result.screenshots)
 
-            if result.available_dates:
+            # rely on screenshots not to iterate over dict
+            if len(result.screenshots) > 0:
                 if not prev_available_dates:
                     notification_text = '🔥 Found available slots!'
                 else:

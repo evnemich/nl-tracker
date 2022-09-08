@@ -4,4 +4,4 @@ state.json
 *chromedriver
 *geckodriver
 *.log
-artifacts/*
+*/artifacts/*
